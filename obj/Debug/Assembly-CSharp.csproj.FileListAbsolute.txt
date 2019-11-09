@@ -277,3 +277,4 @@ D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp.csproj.CoreCompileInpu
 D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp.dll
 D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp.pdb
+D:\Unity Projects\DTF-Hackathon\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb

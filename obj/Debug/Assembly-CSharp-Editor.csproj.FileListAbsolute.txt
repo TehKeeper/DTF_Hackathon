@@ -292,3 +292,4 @@ D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp-Editor.csproj.CoreComp
 D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp-Editor.csproj.CopyComplete
 D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp-Editor.dll
 D:\Unity Projects\DTF-Hackathon\obj\Debug\Assembly-CSharp-Editor.pdb
+D:\Unity Projects\DTF-Hackathon\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
