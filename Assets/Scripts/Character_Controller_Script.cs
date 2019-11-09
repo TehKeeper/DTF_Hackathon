@@ -13,6 +13,8 @@ public class Character_Controller_Script : MonoBehaviour
     public float rotationSpeed;
     public float jumpSpeed;
 
+    
+
     Canvas_Script c_s;
 
 
@@ -59,5 +61,23 @@ public class Character_Controller_Script : MonoBehaviour
             c_s.updateValues(0, 0, 1);
     }
 
+
+    public void lockToTransform(Transform trf, bool code)
+    {
+        if (code)
+        {
+            transform.parent = trf;
+            rb.isKinematic = true;
+        }
+        else
+        {
+            if (transform.parent == trf)
+            {
+                transform.parent = null;
+                rb.isKinematic = false;
+                print("Unlocking");
+            }
+        }
+    }
     
 }
