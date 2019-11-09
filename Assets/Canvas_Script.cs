@@ -9,9 +9,9 @@ public class Canvas_Script : MonoBehaviour
     // Start is called before the first frame update
 
     int
-        stepCounter,
-        jumpCounter,
-        rotCounter;
+        stepCounter=0,
+        jumpCounter=0,
+        rotCounter=0;
     Text 
         stepCountText,
         rotCountText,
@@ -36,11 +36,14 @@ public class Canvas_Script : MonoBehaviour
     /// Обновляет значения в скрипте для счетчиков шагов, вращения и прыжков
     /// </summary>
     /// <param name="values">x-шаги, y-вращение, z-прыжки</param>
-    public void updateValues(Vector3Int values)
+    public void updateValues(int step, int rot,int jmp)
     {
-        stepCounter -= values.x;
-        rotCounter -= values.y;
-        jumpCounter -= values.z;
+        stepCounter -= step;
+        rotCounter -= rot;
+        jumpCounter -= jmp;
+
+        //Debug.LogFormat("Values: {0}, stepCounter: {1}, rotCounter {2}, jumpCounter {3}", values, stepCounter, rotCounter, jumpCounter);
+        //Debug.LogFormat("Values: {0}, values.x: {1}, values.y {2}, jumpCounter {3}", values, stepCounter, rotCounter, jumpCounter);
 
         stepCountText.text = stepCounter.ToString();
         rotCountText.text = rotCounter.ToString();

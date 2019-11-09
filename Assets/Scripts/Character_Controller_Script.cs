@@ -30,7 +30,7 @@ public class Character_Controller_Script : MonoBehaviour
         {
             stepMove(Input.GetAxisRaw("Vertical"));
             stepTurn(Input.GetAxisRaw("Horizontal"));
-            jump();
+            jump(Input.GetAxisRaw("Jump"));
         }
     }
 
@@ -40,20 +40,23 @@ public class Character_Controller_Script : MonoBehaviour
     void stepMove(float axis)
     {
         rb.AddRelativeForce(Vector3.forward * speed * axis);
-        c_s.updateValues(new Vector3Int(1, 0, 0));
+        if(axis!=0)
+            c_s.updateValues(1,0,0);
     }
 
     void stepTurn(float axis)
     {
         rb.AddTorque(Vector3.up * rotationSpeed * axis, ForceMode.Impulse);
-        c_s.updateValues(new Vector3Int(0, 1, 0));
+        if (axis != 0)
+            c_s.updateValues(0,1,0);
 
     }
 
-    void jump()
+    void jump(float axis)
     {
-        rb.AddRelativeForce(Vector3.up * jumpSpeed * Input.GetAxisRaw("Jump"), ForceMode.Impulse);
-        c_s.updateValues(new Vector3Int(0,0,1));
+        rb.AddRelativeForce(Vector3.up * jumpSpeed * axis, ForceMode.Impulse);
+        if (axis != 0)
+            c_s.updateValues(0, 0, 1);
     }
 
     
