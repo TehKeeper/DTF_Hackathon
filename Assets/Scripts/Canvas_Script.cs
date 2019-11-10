@@ -3,28 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using CreatorUtility;
+using UnityEngine.SceneManagement;
+using System;
 
 public class Canvas_Script : MonoBehaviour
 {
     // Start is called before the first frame update
 
     public int
-        stepCounter=10,
-        jumpCounter=10,
-        rotCounter=10;
-    Text 
+        stepCounter = 10,
+        jumpCounter = 10,
+        rotCounter = 10;
+    Text
         stepCountText,
         rotCountText,
         jumpCountText,
         purchText,
         purchPointsText,
-        videoPointsText;
+        videoPointsText,
+        taskText;
 
-    GameObject purchasePanel;
+    GameObject
+        purchasePanel,
+        pausePanel,
+        hpBarFrame;
+
+    Image
+        hpBar;
+
+    int enemyHp;
 
     AudioSource aud;
 
     UtilityOne ugo = new UtilityOne();
+
+    bool paused = false;
+
+    Transform player;
+
+    Button[] checkpointsButtons;
+
+    public Transform[] checkpoints;
 
     void Start()
     {
@@ -36,16 +55,66 @@ public class Canvas_Script : MonoBehaviour
         purchPointsText = ugo.FindTransform("PurchPoints_Text", transform).GetComponent<Text>();
         videoPointsText = ugo.FindTransform("VideoPoints_Text", transform).GetComponent<Text>();
 
+        taskText = ugo.FindTransform("Task_Text", transform).GetComponent<Text>();
+
         purchasePanel = ugo.FindTransform("Purchase_Panel", transform).gameObject;
         aud = purchasePanel.GetComponent<AudioSource>();
 
+        pausePanel = ugo.FindTransform("Pause_Panel", transform).gameObject;
+
+        checkpointsButtons= ugo.FindTransform("Checkpoint Buttons", transform).GetComponentsInChildren<Button>();
+
+        hpBarFrame = ugo.FindTransform("Hp_Bar", transform).gameObject;
+        hpBar = ugo.FindTransform("Hp_Bar_Gauge", hpBarFrame.transform).GetComponent<Image>();
+
+        player = FindObjectOfType<Character_Controller_Script>().transform;
+
         updateValuesText();
+    }
+
+    internal void activateHpBar(bool killingTrigger, int killId)
+    {
+        hpBarFrame.SetActive(killingTrigger);
+        if (!killingTrigger)
+            return;
+        switch (killId)
+        {
+            case 0:
+                enemyHp = 100;
+                break;
+
+            case 1:
+                enemyHp = 1000;
+                break;
+
+
+            default:
+                break;
+        }
+
+        hpBar.fillAmount = enemyHp / 1000;
+    }
+
+    internal void killingDragon()
+    {
+        enemyHp -= 1;
+
+        hpBar.fillAmount = enemyHp / 1000;
+    }
+
+    internal void changeTask()
+    {
+        taskText.text = "Задание: убить дракона!";
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            paused = !paused;
+            _pausePanelOpen(paused);
+        }
     }
 
 
@@ -57,7 +126,7 @@ public class Canvas_Script : MonoBehaviour
     /// <param name="step">шаги</param>
     /// <param name="rot">вращение</param>
     /// <param name="jmp">прыжки</param>
-    public void updateValues(int step, int rot,int jmp)
+    public void updateValues(int step, int rot, int jmp)
     {
         stepCounter -= step;
         rotCounter -= rot;
@@ -97,7 +166,7 @@ public class Canvas_Script : MonoBehaviour
 
     }
 
-    string getReqPoints(int fontSize=40)
+    string getReqPoints(int fontSize = 40)
     {
         string outp = "";
         List<string> names = new List<string>();
@@ -128,7 +197,7 @@ public class Canvas_Script : MonoBehaviour
         */
 
 
-        return "<size="+fontSize+"> "+outp+" </size>";
+        return "<size=" + fontSize + "> " + outp + " </size>";
     }
 
 
@@ -137,13 +206,14 @@ public class Canvas_Script : MonoBehaviour
         float[] times = new float[] { 11f, 39f };
 
 
-        aud.time = times[Random.Range(0,times.GetLength(0))];
+        aud.time = times[UnityEngine.Random.Range(0, times.GetLength(0))];
         aud.Play();
     }
 
 
     public void _openVideo(int ptsAdd)
     {
+        /*
         string[] urls = new string[] 
             {
             "https://www.youtube.com/watch?v=dQw4w9WgXcQ?autoplay=1",
@@ -152,6 +222,9 @@ public class Canvas_Script : MonoBehaviour
             "https://www.youtube.com/watch?v=kffacxfA7G4?autoplay=1&amp;loop=1&amp;&amp;playlist=Video_ID"
             
             };
+            */
+
+        ptsAdd = 50;
 
         if (stepCounter <= 0)
             stepCounter += ptsAdd;
@@ -162,7 +235,7 @@ public class Canvas_Script : MonoBehaviour
 
         updateValuesText();
 
-        Application.OpenURL(urls[Random.Range(0,urls.GetLength(0))]);
+        Application.OpenURL("https://z0r.de/2035");
     }
 
     public void _buySkyrim()
@@ -174,5 +247,50 @@ public class Canvas_Script : MonoBehaviour
     {
         purchasePanel.SetActive(false);
         Time.timeScale = 1f;
+
+    }
+
+    public void _pausePanelOpen(bool code)
+    {
+        if (code)
+        {
+            Time.timeScale = 0.00001f;
+            pausePanel.SetActive(true);
+        }
+        else
+        {
+            Time.timeScale = 1;
+            pausePanel.SetActive(false);
+        }
+    }
+
+    public void _restartLevel()
+    {
+        string cSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(cSceneName);
+        Time.timeScale = 1;
+    }
+
+    public void _backToMenu()
+    {
+        SceneManager.LoadScene(0);
+        Time.timeScale = 1;
+    }
+
+    public void _exitApp()
+    {
+        Application.Quit();
+    }
+
+
+    public void _goToPoint(int ptId)
+    {
+        if (ptId >= checkpoints.GetLength(0))
+            return;
+
+        player.transform.position = checkpoints[ptId].position;
+        player.transform.localEulerAngles = checkpoints[ptId].localEulerAngles;
+        _pausePanelOpen(false);
+        paused = false;
     }
 }

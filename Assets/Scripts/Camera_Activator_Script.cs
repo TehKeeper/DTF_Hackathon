@@ -7,7 +7,13 @@ public class Camera_Activator_Script : MonoBehaviour
     // Start is called before the first frame update
     public Camera relatedCamera;
     public bool trackPlayer = false;
+    public bool callTask=false;
+    public bool killingTrigger;
+    public int killId = 0;
     Camera[] cameras;
+
+    Canvas_Script c_s;
+
 
     Transform player;
 
@@ -16,6 +22,8 @@ public class Camera_Activator_Script : MonoBehaviour
         cameras = FindObjectsOfType<Camera>();
         if(relatedCamera==null)
             relatedCamera = GetComponent<Camera>();
+
+        c_s = FindObjectOfType<Canvas_Script>();
     }
 
     // Update is called once per frame
@@ -34,6 +42,11 @@ public class Camera_Activator_Script : MonoBehaviour
                 player = other.transform;
             }
 
+            other.transform.GetComponent<Character_Controller_Script>().canKill = killingTrigger;
+            other.transform.GetComponent<Character_Controller_Script>().killId = killId;
+
+            c_s.activateHpBar(killingTrigger,killId);
+
             foreach (Camera item in cameras)
             {
                 item.gameObject.SetActive(false);
@@ -43,6 +56,11 @@ public class Camera_Activator_Script : MonoBehaviour
 
 
 
+        }
+
+        if (callTask)
+        {
+            FindObjectOfType<Canvas_Script>().changeTask();
         }
     }
 
